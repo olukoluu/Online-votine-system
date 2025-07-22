@@ -28,6 +28,7 @@ $errors = isset($_SESSION['errors_login']) ? $_SESSION['errors_login'] : [];
                 <label for="InputPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" name="pass" id="InputPassword">
             </div>
+            
             <?php if(isset($errors["input_empty"])) { echo '<p style="color: red;">'.$errors["input_empty"].' </p>'; } ?>
             <button type="submit" class="btn btn-primary px-3">Submit</button>
         </form>

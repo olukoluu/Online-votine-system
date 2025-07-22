@@ -33,10 +33,19 @@ $errors = isset($_SESSION['errors_signup']) ? $_SESSION['errors_signup'] : '';
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" name="email" id="email">
             </div>
+            <?php if (isset($errors["email_invalid"])) {
+                echo '<p style="color: red;">' . $errors["email_invalid"] . '</p>';
+            }  ?>
+            <?php if (isset($errors["email_taken"])) {
+                echo '<p style="color: red;">' . $errors["email_taken"] . '</p>';
+            }  ?>
             <div class="mb-3">
                 <label for="matric_no" class="form-label">Matric Number</label>
                 <input type="number" class="form-control" name="matric_no" id="matric_no">
             </div>
+            <?php if (isset($errors["matric_no_taken"])) {
+                echo '<p style="color: red;">' . $errors["matric_no_taken"] . '</p>';
+            }  ?>
             <div class="mb-3">
                 <label for="pass" class="form-label">Password</label>
                 <input type="password" class="form-control" name="pass" id="pass">
@@ -45,6 +54,10 @@ $errors = isset($_SESSION['errors_signup']) ? $_SESSION['errors_signup'] : '';
                 <label for="cpass" class="form-label">Confirm Password</label>
                 <input type="password" class="form-control" name="cpass" id="cpass">
             </div>
+            <?php if (isset($errors["password_different"])) {
+                echo '<p style="color: red;">' . $errors["password_different"] . '</p>';
+            }  ?>
+
             <?php if (isset($errors["input_empty"])) {
                 echo '<p class="m-0 p-0" style="color: red;">' . $errors["input_empty"] . '</p>';
             }  ?>

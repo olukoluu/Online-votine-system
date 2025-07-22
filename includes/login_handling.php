@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die();
     }
 
-    $sql = "SELECT * FROM voters WHERE matric_no LIKE '$matric_no%'";
+    $sql = "SELECT * FROM voters WHERE matric_number LIKE '$matric_no%'";
     $stmt = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($stmt);
     $count = mysqli_num_rows($stmt);
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['FName'] = $row["first_name"];
             $_SESSION['LName'] = $row["last_name"];
             $_SESSION['Email'] = $row["email"];
-            $_SESSION['matric_no'] = $row["matric_no"];
+            $_SESSION['matric_no'] = $row["matric_number"];
             $_SESSION['is_admin'] = $row["is_admin"];
             $_SESSION['verified'] = $verified;
 

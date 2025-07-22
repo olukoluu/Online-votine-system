@@ -35,7 +35,9 @@ if ($_SESSION['verified'] === true) {
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             $result = $stmt->get_result();
+            $hasRows = false;
             while ($row = $result->fetch_assoc()) {
+                $hasRows = true;
             ?>
                 <section class=" container mt-4 ms-2 p-3 border rounded-2 bg-dark">
                     <div class=" d-flex justify-content-between">
@@ -43,10 +45,15 @@ if ($_SESSION['verified'] === true) {
                             <h5 class=" fw-bold mb-1 d-flex align-items-center"><?= $row['title'] ?> <span class="badge rounded-pill bg-primary text-capitalize fw-medium small ms-2 p-1 px-2"> <?= $row['status'] ?></span></h5>
                             <p class=" small"><?= $row['description'] ?></p>
                         </div>
-                        <div class="form-check form-switch">
+                        <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Are you sure you want to delete this election?');">
+                            <input type="hidden" name="delete_election_id" value="<?= $row['id'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+
+                        <!-- <div class="form-check form-switch">
                             <label class="form-check-label" for="activeSwitch">Active</label>
                             <input class="form-check-input" type="checkbox" role="switch" id="activeSwitch" checked>
-                        </div>
+                        </div> -->
                     </div>
                     <div class=" d-flex gap-2 small text-secondary">
                         <p class=" mb-0">Start: <?= date('d/m/y', strtotime($row['start_date'])) ?></p>
@@ -66,7 +73,13 @@ if ($_SESSION['verified'] === true) {
                         ?>
                             <div class="col">
                                 <div class="p-3 border rounded-3 h-100">
-                                    <h6><?= $prow['title'] ?></h6>
+                                    <div class="d-flex justify-content-between">
+                                        <h6><?= $prow['title'] ?></h6>
+                                        <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Delete this position?');">
+                                            <input type="hidden" name="delete_position_id" value="<?= $prow['id'] ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </div>
                                     <?php
                                     $csql = "SELECT * FROM candidates WHERE position_id = ? ORDER BY id";
                                     $cstmt = $conn->prepare($csql);
@@ -79,7 +92,13 @@ if ($_SESSION['verified'] === true) {
                                         <?php
                                         while ($crow = $cresult->fetch_assoc()) {
                                         ?>
-                                            <p class=" d-flex justify-content-between"><?= $crow['name'] ?></p>
+                                            <div class="d-flex justify-content-between">
+                                            <p class=""><?= $crow['name'] ?></p>
+                                                <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Delete this candidate?');">
+                                                    <input type="hidden" name="delete_candidate_id" value="<?= $crow['id'] ?>">
+                                                    <button type="submit" class="btn btn-danger btn-sm p-0 px-1">Delete</button>
+                                                </form>
+                                            </div>
                                         <?php }
                                         $cstmt->close();
                                         ?>
@@ -112,6 +131,9 @@ if ($_SESSION['verified'] === true) {
                 </section>
             <?php
             };
+            if (!$hasRows) {
+                echo '<h3 class="text-center mt-5">NO ELECTION YET</h3>';
+            }
             ?>
         </main>
 

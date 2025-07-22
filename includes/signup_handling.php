@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errors["email_taken"] = "Email already exist!";
     }
     if (is_matric_no_taken($conn, $matric_no)) {
-        $errors["matic_no_taken"] = "Matic no already exist!";
+        $errors["matric_no_taken"] = "Matric no already exist!";
     }
 
     if ($errors) {
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
     $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
-    $sql = "INSERT INTO voters (first_name, last_name, email, matric_no, pwd) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO voters (first_name, last_name, email, matric_number, pwd) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "sssis", $fname, $lname, $email, $matric_no, $hashed_password);
 

@@ -53,7 +53,7 @@ function is_email_taken($conn, $email)
 //query the db to get matric_no
 function get_matric_no($conn, $matric_no)
 {
-    $sql = "SELECT * FROM voters WHERE matric_no LIKE '$matric_no%'";
+    $sql = "SELECT * FROM voters WHERE matric_number LIKE '$matric_no%'";
         $stmt = mysqli_query($conn,$sql);
         $row = mysqli_fetch_assoc( $stmt );
         // $count = mysqli_num_rows( $stmt );

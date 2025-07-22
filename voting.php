@@ -70,7 +70,17 @@ if ($_SESSION['verified'] === true) {
                             ?>
                         </div>
                     </section>
-
+<!-- SELECT 
+    c.name AS candidate_name,
+    p.title AS position_title,
+    e.title AS election_title,
+    COUNT(v.id) AS vote_count
+FROM candidates c
+JOIN positions p ON c.position_id = p.id
+JOIN elections e ON p.election_id = e.id
+LEFT JOIN votes v ON v.candidate_id = c.id
+GROUP BY c.id
+ORDER BY e.id, p.id, vote_count DESC; -->
                 <?php }
                 $pstmt->close();
                 ?>

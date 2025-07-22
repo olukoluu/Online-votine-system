@@ -39,9 +39,9 @@ if ($_SESSION['verified'] === true) {
                                     $sql = "SELECT COUNT(*) AS active_elections FROM elections WHERE status = 1";
                                     $stmt = mysqli_query($conn, $sql);
                                     $result = $stmt->fetch_column();
-                                    echo '<p class="mb-0 fw-bold fs-3">'.$result.'</p>';
+                                    echo '<p class="mb-0 fw-bold fs-3">' . $result . '</p>';
                                     ?>
-                                    
+
                                 </div>
                             </div>
                             <a href="elections.php" class=" text-decoration-none fw-semibold">View all elections</a>
@@ -53,7 +53,12 @@ if ($_SESSION['verified'] === true) {
                                 <span class=" bg-success bg-gradient rounded-2 h-100 p-3"><img src="../asset/images/tick.png" alt="votes" style="width: 30px;"></span>
                                 <div>
                                     <p class=" mb-0 fw-semibold text-secondary">Total Votes</p>
-                                    <p class="mb-0 fw-bold fs-3">303</p>
+                                    <?php
+                                    $sql = "SELECT COUNT(*) AS allvotes FROM votes";
+                                    $stmt = mysqli_query($conn, $sql);
+                                    $result = $stmt->fetch_column();
+                                    echo '<p class="mb-0 fw-bold fs-3">' . $result . '</p>';
+                                    ?>
                                 </div>
                             </div>
                             <a href="results.php" class=" text-decoration-none fw-semibold">View voting stats</a>
@@ -65,7 +70,12 @@ if ($_SESSION['verified'] === true) {
                                 <span class=" bg-danger bg-gradient rounded-2 h-100 p-3"><img src="../asset/images/people.png" alt="candidate" style="width: 30px;"></span>
                                 <div>
                                     <p class=" mb-0 fw-semibold text-secondary">Registered Candidates</p>
-                                    <p class="mb-0 fw-bold fs-3">13</p>
+                                    <?php
+                                    $sql = "SELECT COUNT(*) AS allcandidates FROM candidates";
+                                    $stmt = mysqli_query($conn, $sql);
+                                    $result = $stmt->fetch_column();
+                                    echo '<p class="mb-0 fw-bold fs-3">' . $result . '</p>';
+                                    ?>
                                 </div>
                             </div>
                             <a href="candidates.php" class=" text-decoration-none fw-semibold">View all Candidates</a>
@@ -81,8 +91,9 @@ if ($_SESSION['verified'] === true) {
                             $sql = "SELECT * FROM elections ORDER BY start_date";
                             $stmt = mysqli_query($conn, $sql);
 
+                            $hasRows = false;
                             while ($row = mysqli_fetch_array($stmt)) {
-                                // $status = $row['status'] ? 'Active' : 'Inactive';
+                                $hasRows = true;
                                 echo '
                             <tr>
                             <td>
@@ -92,9 +103,13 @@ if ($_SESSION['verified'] === true) {
                                 </div>
                             </td>
                             <td>' . $row['start_date'] . '</td>
-                            <td><span class="badge rounded-pill bg-primary text-capitalize small">'.$row['status'].'</span></td>
+                            <td><span class="badge rounded-pill bg-primary text-capitalize small">' . $row['status'] . '</span></td>
                         </tr>
                             ';
+                            }
+
+                            if (!$hasRows) {
+                                echo '<tr><td colspan="3"><h3 class="text-center">NO ELECTION YET</h3></td></tr>';
                             }
                             ?>
                     </tbody>

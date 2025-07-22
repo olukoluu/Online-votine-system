@@ -42,10 +42,6 @@ if ($_SESSION['verified'] === true) {
                         <h5 class=" fw-bold mb-1 d-flex align-items-center"><?= $row['title'] ?></h5>
                         <button class="btn btn-primary-outline"></button>
                     </div>
-
-
-<!-- Use accordion -->
-
                     <?php
                     $psql = "SELECT * FROM positions WHERE election_id = ? ORDER BY id";
                     $pstmt = $conn->prepare($psql);
@@ -69,11 +65,24 @@ if ($_SESSION['verified'] === true) {
                                     $cresult = $cstmt->get_result();
                                     $candidateCount = $cresult->num_rows; ?>
                                     <p class=" small"><?= $candidateCount ?> candidate(s)</p>
+
                                     <div class="">
                                         <?php
                                         while ($crow = $cresult->fetch_assoc()) {
                                         ?>
-                                            <p class=" d-flex justify-content-between"><?= $crow['name'] ?></p>
+                                            <div class=" d-flex justify-content-between">
+                                                <p class=" d-flex justify-content-between"><?= $crow['name'] ?></p>
+                                                <?php
+                                                $vsql = "SELECT COUNT(*) AS vote_count FROM votes WHERE candidate_id = ? AND position_id = ? AND election_id = ?";
+                                                $vstmt = $conn->prepare($vsql);
+                                                $vstmt->bind_param("iii", $crow['id'], $prow['id'], $row['id']);
+                                                $vstmt->execute();
+                                                $vresult = $vstmt->get_result();
+                                                if ($vrow = $vresult->fetch_assoc()) {
+                                                    echo "<p>" .$vrow['vote_count']." vote(s)</p>";
+                                                }
+                                                ?>
+                                            </div>
                                         <?php }
                                         $cstmt->close();
                                         ?>

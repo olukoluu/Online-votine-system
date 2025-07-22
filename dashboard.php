@@ -3,6 +3,7 @@ ob_start();
 include_once('includes/connect.php');
 session_start();
 
+$id = $_SESSION['id'];
 $matric_no = $_SESSION['matric_no'];
 
 
@@ -60,9 +61,9 @@ if ($_SESSION['verified'] === true) {
                         <p class=" d-inline-block m-2 ms-0">End: <?= date('d/m/y', strtotime($row['end_date'])) ?></p>
                     </div>
                     <?php
-                    $checksql = "SELECT 1 FROM votes WHERE election_id = ?";
+                    $checksql = "SELECT 1 FROM votes WHERE election_id = ? AND voter_id = ?";
                     $checkstmt = $conn->prepare($checksql);
-                    $checkstmt->bind_param('i', $row['id']);
+                    $checkstmt->bind_param('ii', $row['id'], $id);
                     $checkstmt->execute();
                     $presult = $checkstmt->get_result();
                     if ($presult->num_rows) {
