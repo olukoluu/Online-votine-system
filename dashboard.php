@@ -38,11 +38,14 @@ if ($_SESSION['verified'] === true) {
             <h3>Available Elections</h3>
 
             <?php
-            $sql = "SELECT * FROM elections";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
+            $sql = "SELECT * FROM elections WHERE status = 'active'";
+            // $stmt = $conn->prepare($sql);
+            // $stmt->execute();
+            // $result = $stmt->get_result();
+            $stmt = mysqli_query($conn, $sql);
+            $hasRows = false;
+            while ($row = mysqli_fetch_assoc($stmt)) {
+                $hasRows = true;
             ?>
                 <section class=" container d-flex justify-content-between align-items-center mt-4 p-3 border rounded-2 bg-dark w-100">
                     <div class="">
@@ -79,7 +82,11 @@ if ($_SESSION['verified'] === true) {
                     }
                     ?>
                 </section>
-            <?php } ?>
+            <?php }
+            if (!$hasRows) {
+                echo '<tr><td colspan="3"><h3 class="text-center my-4">NO AVAILALBLE ELECTION</h3></td></tr>';
+            }
+            ?>
         </main>
     </body>
 

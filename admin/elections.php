@@ -32,35 +32,41 @@ if ($_SESSION['verified'] === true) {
             </div>
             <?php
             $sql = "SELECT * FROM elections";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            $stmt = mysqli_query($conn, $sql);
             $hasRows = false;
-            while ($row = $result->fetch_assoc()) {
+            while ($row = mysqli_fetch_array($stmt)) {
                 $hasRows = true;
             ?>
                 <section class=" container mt-4 ms-2 p-3 border rounded-2 bg-dark">
                     <div class=" d-flex justify-content-between">
                         <div class="">
-                            <h5 class=" fw-bold mb-1 d-flex align-items-center"><?= $row['title'] ?> <span class="badge rounded-pill bg-primary text-capitalize fw-medium small ms-2 p-1 px-2"> <?= $row['status'] ?></span></h5>
+                            <h5 class=" fw-bold mb-1 d-flex align-items-center"><?= $row['title'] ?>
+                                <!-- <span class="badge rounded-pill bg-primary text-capitalize fw-medium small ms-2 p-1 px-2"> <?= $row['status'] ?></span> -->
+                            </h5>
                             <p class=" small"><?= $row['description'] ?></p>
                         </div>
-                        <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Are you sure you want to delete this election?');">
-                            <input type="hidden" name="delete_election_id" value="<?= $row['id'] ?>">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
 
-                        <!-- <div class="form-check form-switch">
-                            <label class="form-check-label" for="activeSwitch">Active</label>
-                            <input class="form-check-input" type="checkbox" role="switch" id="activeSwitch" checked>
-                        </div> -->
+                        <div class=" d-flex gap-3 align-items-center">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="activeSwitch<?= $row['id'] ?>">Active</label>
+                                <input class="form-check-input toggle-election" type="checkbox" role="switch" id="activeSwitch<?= $row['id'] ?>" data-id="<?= $row['id']; ?>"
+                                    <?= $row['status'] == 'active' ? 'checked' : ''; ?>>
+                            </div>
+
+                            <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Are you sure you want to delete this election?');">
+                                <input type="hidden" name="delete_election_id" value="<?= $row['id'] ?>">
+                                <button type="submit" class="btn">
+                                    <img src="../asset/images/delete.png" alt="position" style="width: 30px;" />
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     <div class=" d-flex gap-2 small text-secondary">
                         <p class=" mb-0">Start: <?= date('d/m/y', strtotime($row['start_date'])) ?></p>
                         <p class=" mb-0">End: <?= date('d/m/y', strtotime($row['end_date'])) ?></p>
                         <?php
                         $psql = "SELECT * FROM positions WHERE election_id = ? ORDER BY id";
-                        $pstmt = $conn->prepare($psql);
+                        $pstmt = mysqli_prepare($conn, $psql);
                         $pstmt->bind_param('i', $row['id']);
                         $pstmt->execute();
                         $presult = $pstmt->get_result();
@@ -73,11 +79,13 @@ if ($_SESSION['verified'] === true) {
                         ?>
                             <div class="col">
                                 <div class="p-3 border rounded-3 h-100">
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-between align-items-center mb-0 pb-0">
                                         <h6><?= $prow['title'] ?></h6>
                                         <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Delete this position?');">
                                             <input type="hidden" name="delete_position_id" value="<?= $prow['id'] ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            <button type="submit" class="btn p-0">
+                                                <img src="../asset/images/delete.png" alt="position" style="width: 20px;" />
+                                            </button>
                                         </form>
                                     </div>
                                     <?php
@@ -92,11 +100,13 @@ if ($_SESSION['verified'] === true) {
                                         <?php
                                         while ($crow = $cresult->fetch_assoc()) {
                                         ?>
-                                            <div class="d-flex justify-content-between">
-                                            <p class=""><?= $crow['name'] ?></p>
+                                            <div class=" d-flex justify-content-between">
+                                                <p class=""><?= $crow['name'] ?></p>
                                                 <form method="POST" action="../includes/delete.php" onsubmit="return confirm('Delete this candidate?');">
                                                     <input type="hidden" name="delete_candidate_id" value="<?= $crow['id'] ?>">
-                                                    <button type="submit" class="btn btn-danger btn-sm p-0 px-1">Delete</button>
+                                                    <button type="submit" class="btn p-0">
+                                                        <img src="../asset/images/delete.png" alt="position" style="width: 20px;" />
+                                                    </button>
                                                 </form>
                                             </div>
                                         <?php }
@@ -173,6 +183,26 @@ if ($_SESSION['verified'] === true) {
             </div>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on("change", ".toggle-election", function() {
+            let electionId = $(this).data("id");
+            let isActive = $(this).is(":checked");
+
+            $.ajax({
+                url: "../includes/toggle_election.php",
+                type: "POST",
+                data: {
+                    id: electionId,
+                    status: isActive
+                },
+                success: function(response) {
+                    // console.log(isActive);
+                }
+            });
+        });
+    </script>
+
 
     </html>
 <?php

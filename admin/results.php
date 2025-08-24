@@ -31,11 +31,14 @@ if ($_SESSION['verified'] === true) {
             </div>
 
             <?php
+            // $sql = "SELECT * FROM elections";
+            // $stmt = $conn->prepare($sql);
+            // $stmt->execute();
+            // $result = $stmt->get_result();
+
             $sql = "SELECT * FROM elections";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
+            $stmt = mysqli_query($conn, $sql); 
+            while ($row = mysqli_fetch_assoc($stmt)) {
             ?>
                 <section class=" container mt-4 ms-2 p-3 border rounded-2 bg-dark">
                     <div class=" d-flex justify-content-between">

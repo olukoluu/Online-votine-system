@@ -26,10 +26,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die();
     }
 
-    $sql = "SELECT * FROM voters WHERE matric_number LIKE '$matric_no%'";
-    $stmt = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($stmt);
-    $count = mysqli_num_rows($stmt);
+    // $sql = "SELECT * FROM voters WHERE matric_number LIKE '$matric_no%'";
+    // $stmt = mysqli_query($conn, $sql);
+    // $row = mysqli_fetch_assoc($stmt);
+    // $count = mysqli_num_rows($stmt);
+
+    $sql = "SELECT * FROM voters WHERE matric_number = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    $stmt->bind_param('i', $matric_no);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = mysqli_fetch_assoc($result);
+    $count = mysqli_num_rows($result);
 
     if ($count == 1) {
         $hashed_password = $row['pwd'];
